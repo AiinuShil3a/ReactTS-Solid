@@ -9,26 +9,27 @@ function BMICalculatorComponent() {
   const [interpretation, setInterpretation] = useState<string>("");
 
   const handleCalculate = () => {
-      const calculator = new BMICalculator();
+    try {
+      const calculator = new BMICalculator(parseFloat(weight), parseFloat(height));
       const interpretationCalculator = new BMIInterpretation();
-
-      const bmiValue: number = calculator.calculateBMI(
-        parseFloat(weight),
-        parseFloat(height)
-      );
-
-      const interpretationValue: string = interpretationCalculator.interpretBMI(
-        bmiValue
-      );
-
-      if (typeof bmiValue === "number") {
+  
+      const bmiValue: number = calculator.calculateBMI();
+  
+      const interpretationValue: string = interpretationCalculator.interpretBMI(bmiValue);
+  
+      if (!isNaN(bmiValue)) {
         setBMI(bmiValue.toFixed(2));
         setInterpretation(interpretationValue);
       } else {
         setBMI("");
-        setInterpretation(bmiValue);
+        setInterpretation("Invalid BMI value");
       }
+    } catch (error) {
+      setBMI("");
+      setInterpretation(error.message);
+    }
   };
+  
 
   return (
     <div className="center">
